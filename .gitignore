@@ -1,0 +1,4 @@
+local_env.bash
+.ignore/*
+*~
+.*.swp

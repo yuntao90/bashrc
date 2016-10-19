@@ -1,0 +1,18 @@
+#!/bin/bash
+
+BASHRC_COMPLETION_DIR=$(dirname $MY_BASH_COMPLETION)
+
+source $BASHRC_COMPLETION_DIR/bashrc.bash
+source $BASHRC_COMPLETION_DIR/droid.bash
+
+#    echo COMP_LINE $COMP_LINE
+#    echo COMP_POINT $COMP_POINT
+#    echo COMP_TYPE $COMP_TYPE
+#    echo COMP_KEY $COMP_KEY
+#    echo COMP_WORDS $COMP_WORDS
+#    echo COMP_WORD $COMP_WORD
+
+#    if [ "${#COMPREPLY[@]}" -eq 0 ] ; then
+#        COMPREPLY=( "1" )
+#        return 0
+#    fi
