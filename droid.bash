@@ -242,10 +242,9 @@ function droid_build_init()
     export PATH=$(dirname $origin_adb_path):$PATH
 
     # Find jack and raise jack heap size.
-    local whereisjack="type -t jack"
+    local whereisjack="$(type -t jack)"
     if [ -n "$whereisjack" ] ; then
         local jack_version=`jack --version | grep Version:`
-        echo $jack_version
         if [ -n "$jack_version" ] ; then
             droid_override_jackserver_heapsize
         fi
