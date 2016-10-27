@@ -526,8 +526,36 @@ function droid_proc_quit()
     droid_proc_signal "$@" 3
 }
 
-alias logcatee="adb logcat -v threadtime | tee $HOME/droid.logcatee.log && echo logcat saved into $HOME/droid.logcatee.log"
-alias logcatdump="adb logcat -v threadtime -d | tee $HOME/droid.logcatdump.log ; less $HOME/droid.logcatdump.log ; echo ; echo logcat saved into $HOME/droid.logcatdump.log; echo"
+function logcatee()
+{
+    local parameters="$@"
+    local output="$HOME/droid.logcatee.log"
+
+    local prompt="\nlogcat saved into $output\n"
+
+    # trap the Ctrl+C command, and echo result
+    trap "trap 2; echo -e $prompt" 2
+
+    adb logcat -v threadtime $parameters | tee $output
+
+    # Cancel trap because executing done.
+    trap 2
+    echo -e $prompt
+}
+
+function logcatdump()
+{
+    local parameters="$@"
+    local output="$HOME/droid.logcatdump.log"
+
+    local prompt="\nlogcat saved into $output\n"
+
+    adb logcat -v threadtime -d $parameters | tee $output
+
+    less $output
+
+    echo -e $prompt
+}
 
 function repo-silent-sync()
 {
