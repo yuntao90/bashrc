@@ -39,4 +39,5 @@ mkdir -p ~/tools/bin/
 cp install/bin/parallel ~/tools/bin/.
 fi
 
-echo 'install complete, run source $HOME/.bashrc to gather it'
+echo "Install complete, reloading $HOME/.bashrc"
+source $HOME/.bashrc
