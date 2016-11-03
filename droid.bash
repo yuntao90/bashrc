@@ -533,7 +533,7 @@ function logcatee()
     local prompt="\nlogcat saved into $output\n"
 
     # trap the Ctrl+C command, and echo result
-    trap "trap 2; echo -e $prompt" 2
+    trap "trap 2; less $out; echo -e $prompt" 2
 
     adb logcat -v threadtime $parameters | tee $output
 
