@@ -44,6 +44,9 @@ ideas
     **sfind**
     : Alias of find . | grep
 
+    **sfind-select**
+    : Acquire sfind results and use viewer to open it, if the results count is more than 1, select number (support multi-select) you prefer, otherwise open it directly. You can set DEFAULT_SFIND_SELECT_VIEWER as default viewer into local_env.bash, default is "vi".
+
     **loop-do**
     : Do something in dead loop
 

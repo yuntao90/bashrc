@@ -139,7 +139,66 @@ fi
 alias reloadbash='source ~/.bashrc'
 
 # Alias sfind, it will find file easily
-alias sfind='find . | grep '
+function sfind()
+{
+    local find_options="."
+    local grep_options="$@"
+    find $find_options | grep $grep_options
+}
+
+# TODO, for more platforms
+if [ -z "$DEFAULT_SFIND_SELECT_VIEWER" ] ; then
+    DEFAULT_SFIND_SELECT_VIEWER="vi"
+fi
+
+function sfind-select()
+{
+    local selections
+    local sfind_options="$@"
+    local index=0
+    local selector selectors print_items
+    local results=`sfind $sfind_options`
+    if [ -z "$results" ] ; then
+        echo "sfind $sfind_options got nothing"
+        return
+    fi
+    echo
+    selections=( $results )
+    for selector in $results ; do
+        print_items="$print_items  $index\t$selector\n"
+        index=$(( $index + 1 ))
+    done
+    if [ "$index" = "1" ] ; then
+        echo -e "sfind [$sfind_options] only found\n\n  \t$results\n\nuse [$DEFAULT_SFIND_SELECT_VIEWER] to open\n"
+        $DEFAULT_SFIND_SELECT_VIEWER $results
+        return
+    else
+        print_items="$print_items  $index\tall of them"
+    fi
+    echo -e "$print_items"
+    echo
+    echo -n "Which files would you want to view with [$DEFAULT_SFIND_SELECT_VIEWER] ? "
+    read selector
+    if [ -z "$selector" ] ; then
+        echo "Invalid input"
+        return
+    fi
+
+    if [ "$selector" = "$index" ] ; then
+        # echo "Open all of them"
+        $DEFAULT_SFIND_SELECT_VIEWER $results
+        return
+    fi
+
+    selectors=( "$selector" )
+    results=""
+    for selector in $selectors ; do
+        selector=$(echo $selector | egrep [0-9]*)
+        # echo "Selecting $selector..."
+        results="${selections[selector]} $results"
+    done
+    $DEFAULT_SFIND_SELECT_VIEWER $results
+}
 # function sfind()
 # {
 #    find -iwholename *$1* | grep $1
