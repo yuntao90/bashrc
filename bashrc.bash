@@ -173,6 +173,7 @@ function sfind-select()
         $DEFAULT_SFIND_SELECT_VIEWER $results
         return
     else
+        echo -e "sfind [$sfind_options] found $index items\n"
         print_items="$print_items  $index\tall of them"
     fi
     echo -e "$print_items"
