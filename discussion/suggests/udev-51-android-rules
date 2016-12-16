@@ -1,0 +1,16 @@
+# The Android Device adding steps
+
+1. Ensure the rules file exists
+    /etc/udev/rules.d/51-android.rules should be exists.
+2. Write rules
+    Like:
+    # fastboot protocol on passion (Nexus One)
+    SUBSYSTEM=="usb", ATTR{idVendor}=="<lsusb first id>", ATTR{idProduct}=="<lsusb last id>", MODE="0600"
+3. Run command to reload rules
+    sudo udevadm control --reload-rules
+4. Edit adb_usb.ini
+    add <idVendor> into ~/.android/adb_usb.ini
+5. Restart adb server
+    adb kill-server ; adb devices
+6. Disconnect device and try again
+
