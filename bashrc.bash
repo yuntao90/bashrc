@@ -157,18 +157,23 @@ function sfind-select()
     local sfind_options="$@"
     local index=0
     local selector selectors print_items
+    # Run sfind $@, and collect results.
     local results=`sfind $sfind_options`
+    # Ensure the results was right.
     if [ -z "$results" ] ; then
         echo "sfind $sfind_options got nothing"
         return
     fi
+
     echo
+    # Put the sfind results into array and print them.
     selections=( $results )
     for selector in $results ; do
         print_items="$print_items  $index\t$selector\n"
         index=$(( $index + 1 ))
     done
     if [ "$index" = "1" ] ; then
+        # If only one item was found, open it directly.
         echo -e "sfind [$sfind_options] only found\n\n  \t$results\n\nuse [$DEFAULT_SFIND_SELECT_VIEWER] to open\n"
         $DEFAULT_SFIND_SELECT_VIEWER $results
         return
@@ -178,26 +183,34 @@ function sfind-select()
     fi
     echo -e "$print_items"
     echo
+
+    # Wait for user input.
     echo -n "Which files would you want to view with [$DEFAULT_SFIND_SELECT_VIEWER] ? "
     read selector
+    # echo "User input $selector"
     if [ -z "$selector" ] ; then
         echo "Invalid input"
         return
     fi
 
+    # User said all of them.
     if [ "$selector" = "$index" ] ; then
         # echo "Open all of them"
         $DEFAULT_SFIND_SELECT_VIEWER $results
         return
     fi
 
-    selectors=( "$selector" )
+    # If user input much more files, try to collect them all.
+    selector=$(echo "$selector" | egrep -o [0-9].?)
+    selectors=( $selector )
     results=""
     for selector in $selectors ; do
-        selector=$(echo $selector | egrep [0-9]*)
-        # echo "Selecting $selector..."
+        # echo "Iterating now is $selector"
+        # selector=$(echo $selector | egrep -o [0-9].?)
+        # echo "Selecting $selector ..."
         results="${selections[selector]} $results"
     done
+    # echo "executing $DEFAULT_SFIND_SELECT_VIEWER $results"
     $DEFAULT_SFIND_SELECT_VIEWER $results
 }
 # function sfind()
