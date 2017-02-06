@@ -23,14 +23,28 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
+function get_value()
+{
+    local name="$1"
+    local value
+    eval value=\$$name
+    echo "$value"
+}
+
+function dump_value()
+{
+    local name="$1"
+    local value
+    eval value=$(get_value $name)
+    echo "$name = $value"
+}
+
 # Param 1 : ENV_NAME
 # Param 2 : ENV_VALUE
 function check_env_and_print()
 {
     local name="$1"
-    local value=\$name
-#    value=$(eval echo $`eval echo $value`)
-    eval value=\$$name
+    local value=$(get_value $name)
 
     if [ -n "$name" ] ; then
 #        echo $name=$value
@@ -57,6 +71,22 @@ if [ -x /usr/bin/dircolors ]; then
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
+
+
+
+function is_number_only()
+{
+    local input="$@"
+    # dump_value input
+    if [ -n "$input" ] ; then
+        local filter_result="$(echo $input | egrep -o [0-9].?)"
+        # dump_value filter_result
+        if [ "$filter_result" = "$input" ] ; then
+            return 0
+        fi
+    fi
+    return 1
+}
 
 # some more ls aliases
 alias ll='ls -alF'
