@@ -302,6 +302,7 @@ function is_droid_space_root()
     return 1
 }
 
+# TODO will be @removed, not a best/automatic/compatibility way to prepare the pdk.
 function pdkprepare()
 {
     export PDK_FUSION_PLATFORM_ZIP=vendor/pdk/mini_armv7a_neon/mini_armv7a_neon-userdebug/platform/platform.zip
@@ -374,12 +375,53 @@ function droid_am_focused()
     echo "$(droid_am_dump)" | grep mFocusedActivity
 }
 
+function droid_am_hprof()
+{
+    local processname="$1"
+    local target_device_path="/data/local/tmp/hprof/$processname.hprof"
+    local target_path="$PWD/$processname.hprof"
+    local conv_path="$PWD/$processname.conv.hprof"
+    local prompt
+    # dump_value target_device_path
+    # dump_value target_path
+    # dump_value conv_path
+
+    # ensure permissions and dirs
+    adb shell mkdir /data/local/tmp/hprof
+    adb shell chmod 777 /data/local/tmp/hprof
+    adb shell am dumpheap $(droid_proc_pid "$processname") $target_device_path
+    # Wait for hprof dump success.
+    sleep 1.5
+
+    adb pull $target_device_path $target_path
+
+    if [ -f $target_path ] ; then
+        prompt="Success dumped file on $target_path"
+        if has_command hprof-conv ; then
+            hprof-conv $target_path $conv_path
+            if [ -f $conv_path ] ; then
+                prompt="$prompt, and converted in $conv_path"
+            fi
+        fi
+        echo $prompt
+        return
+    fi
+    echo "Failed to dump hprof for $processname"
+}
+
 function droid_proc_pid()
 {
     local processname="$1"
     local procfile="$2"
     local pid
-    pid=$(adb shell ps | grep $processname | xargs echo | cut -d " " -f2)
+
+    # TODO, to validate process exists by an exact way.
+    if is_number_only $processname ; then
+        pid=$processname
+    else
+        pid=$(adb shell ps | grep $processname | xargs echo | cut -d " " -f2)
+    fi
+
     if [ -n "$procfile" ] ; then
         adb shell cat /proc/$pid/$procfile
     else

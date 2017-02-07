@@ -72,3 +72,4 @@ _droid_proc_pid_simple()
 complete -F _droid_proc_pid_simple droid_proc_kill
 complete -F _droid_proc_pid_simple droid_proc_quit
 complete -F _droid_proc_pid_simple droid_proc_signal
+complete -F _droid_proc_pid_simple droid_am_hprof
