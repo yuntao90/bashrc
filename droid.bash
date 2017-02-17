@@ -381,17 +381,42 @@ function droid_am_hprof()
     local target_device_path="/data/local/tmp/hprof/$processname.hprof"
     local target_path="$PWD/$processname.hprof"
     local conv_path="$PWD/$processname.conv.hprof"
+    local hprof_size="0"
+    local last_hprof_size=$hprof_size
+    local query_size_interval="0.2"
+    local max_size_not_increase_times="3"
+    local size_not_increase_times="0"
     local prompt
     # dump_value target_device_path
     # dump_value target_path
     # dump_value conv_path
 
     # ensure permissions and dirs
-    adb shell mkdir /data/local/tmp/hprof
-    adb shell chmod 777 /data/local/tmp/hprof
+    adb shell mkdir /data/local/tmp/hprof > /dev/null
+    adb shell chmod 777 /data/local/tmp/hprof > /dev/null
     adb shell am dumpheap $(droid_proc_pid "$processname") $target_device_path
-    # Wait for hprof dump success.
-    sleep 1.5
+    echo -e "Just wait for a while...\c"
+    # Wait for hprof dump start.
+    sleep 0.5
+    echo -e "\rCalculating $target_device_path size ..."
+    # query hprof size, ensure it can not increase anymore
+    while [ true ]
+    do
+        hprof_size=$(adb shell du -s $target_device_path | awk '{print $'1'}')
+        if [ "$hprof_size" = "$last_hprof_size" ] ; then
+            size_not_increase_times=$(( $size_not_increase_times + 1 ))
+        else
+            size_not_increase_times="0"
+        fi
+        echo -e "\r$target_device_path ... $hprof_size\c"
+        # $(expr ${popLevel} '>' 0) -eq 1
+        if [ $(expr ${size_not_increase_times} '>' $max_size_not_increase_times) -eq 1 ] ; then
+            break;
+        fi
+        last_hprof_size=$hprof_size
+    done
+    echo -e "\n"
+    echo "Dump hprof to [$target_path]"
 
     adb pull $target_device_path $target_path
 
@@ -400,12 +425,15 @@ function droid_am_hprof()
         if has_command hprof-conv ; then
             hprof-conv $target_path $conv_path
             if [ -f $conv_path ] ; then
-                prompt="$prompt, and converted in $conv_path"
+                prompt="$prompt\nConverted in $conv_path"
             fi
         fi
-        echo $prompt
+        echo
+        echo -e $prompt
+        echo
         return
     fi
+    echo
     echo "Failed to dump hprof for $processname"
 }
 
