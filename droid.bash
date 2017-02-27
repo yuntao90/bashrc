@@ -383,10 +383,11 @@ function droid_am_hprof()
     local conv_path="$PWD/$processname.conv.hprof"
     local hprof_size="0"
     local last_hprof_size=$hprof_size
-    local query_size_interval="0.2"
+    local query_size_interval="0.3"
     local max_size_not_increase_times="3"
     local size_not_increase_times="0"
     local prompt
+    local first_wait_time="1"
     # dump_value target_device_path
     # dump_value target_path
     # dump_value conv_path
@@ -397,7 +398,7 @@ function droid_am_hprof()
     adb shell am dumpheap $(droid_proc_pid "$processname") $target_device_path
     echo -e "Just wait for a while...\c"
     # Wait for hprof dump start.
-    sleep 0.5
+    sleep $first_wait_time
     echo -e "\rCalculating $target_device_path size ..."
     # query hprof size, ensure it can not increase anymore
     while [ true ]
