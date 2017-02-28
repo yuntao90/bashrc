@@ -140,4 +140,13 @@ _bd()
     esac
 }
 
-complete -F _bd -o nospace bd
+complete -o nospace -F _bd bd
+
+_getip()
+{
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local available_devices=`get_available_inet_devices`
+    COMPREPLY=( $(compgen -W "${available_devices}" -- "${cur}") )
+}
+
+complete -o nospace -F _getip getip

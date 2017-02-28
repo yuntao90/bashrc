@@ -405,11 +405,16 @@ function vga_add_mode()
     sudo xrandr --addmode "$display_device" $modename
 }
 
+function get_available_inet_devices()
+{
+    ifconfig | grep ^[a-zA-Z0-9] | awk '{print $1}'
+}
+
 # Get the simple ip address instead of ifconfig. Only support for ipv4.
 # param 1 - device : the device you want to parse the ip address, default is eth0
 function getip()
 {
-    local inet_line maybe_address splitter device="eth0"
+    local inet_line maybe_address splitter device="$(echo `get_available_inet_devices` | awk '{print $1}')"
     if [ -n "$1" ] ; then
         device="$1"
     fi
