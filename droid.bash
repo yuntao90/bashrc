@@ -392,9 +392,16 @@ function droid_am_hprof()
     # dump_value target_path
     # dump_value conv_path
 
+    if [ -z "$processname" ] ; then
+        echo
+        echo -e "droid_am_hprof [pid|processname]\n\n\tPlease pass pid or processname first"
+        echo
+        return;
+    fi
+
     # ensure permissions and dirs
-    adb shell mkdir /data/local/tmp/hprof > /dev/null
-    adb shell chmod 777 /data/local/tmp/hprof > /dev/null
+    adb shell mkdir /data/local/tmp/hprof > /dev/null 2>&1
+    adb shell chmod 777 /data/local/tmp/hprof > /dev/null 2>&1
     adb shell am dumpheap $(droid_proc_pid "$processname") $target_device_path
     echo -e "Just wait for a while...\c"
     # Wait for hprof dump start.
