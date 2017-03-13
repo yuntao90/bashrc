@@ -231,14 +231,21 @@ function sfind-select()
     fi
 
     # If user input much more files, try to collect them all.
-    selector=$(echo "$selector" | egrep -o [0-9].?)
     selectors=( $selector )
     results=""
-    for selector in $selectors ; do
+    for selector in ${selectors[*]} ; do
         # echo "Iterating now is $selector"
-        # selector=$(echo $selector | egrep -o [0-9].?)
         # echo "Selecting $selector ..."
-        results="${selections[selector]} $results"
+        # dump_value selector
+        if is_number_only $selector ; then
+            # If input is only numbers, then parse in selections
+            results="${selections[selector]} $results"
+        else
+            # Or not a number, maybe a path, to assume if exists and open it.
+            if [ -f "$selector" ] ; then
+                results="$selector $results"
+            fi
+        fi
     done
     # echo "executing $DEFAULT_SFIND_SELECT_VIEWER $results"
     $DEFAULT_SFIND_SELECT_VIEWER $results
