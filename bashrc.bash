@@ -379,11 +379,14 @@ function vga_new_mode()
 # Param 1 : Display Device, default=VGA1 or DEFAULT_ADDITIONAL_DISPLAY_DEVICE
 # Param 2 : X resolution, default=1680 or DEFAULT_ADDITIONAL_DISPLAY_X
 # Param 3 : Y resolution, default=1050 or DEFAULT_ADDITIONAL_DISPLAY_Y
+# or
+# Param 1 : Display Device, default=VGA1 or DEFAULT_ADDITIONAL_DISPLAY_DEVICE
+# Param 2 : modename added previously
 function vga_add_mode()
 {
     local display_device="$DEFAULT_ADDITIONAL_DISPLAY_DEVICE"
-    local x=""
-    local y="$3"
+    local x y
+    local modename
 
     # Check parameters
     if [ -z "$display_device" ] ; then
@@ -393,22 +396,34 @@ function vga_add_mode()
         fi
     fi
 
-    if [ -z "$x" ] ; then
-        x="$DEFAULT_ADDITIONAL_DISPLAY_X"
+    if [ -n "$2" ] ; then
+        if is_number_only "$2" ; then
+            x="$2"
+            y="$3"
+        else
+            modename="$2"
+        fi
+    fi
+
+    if [ -z "$modename" ] ; then
         if [ -z "$x" ] ; then
-            x="1680"
+            x="$DEFAULT_ADDITIONAL_DISPLAY_X"
+            if [ -z "$x" ] ; then
+                x="1680"
+            fi
         fi
-    fi
 
-    if [ -z "$y" ] ; then
-        y="$DEFAULT_ADDITIONAL_DISPLAY_Y"
         if [ -z "$y" ] ; then
-            y="1050"
+            y="$DEFAULT_ADDITIONAL_DISPLAY_Y"
+            if [ -z "$y" ] ; then
+                y="1050"
+            fi
         fi
+
+        modename=$(vga_new_mode $x $y)
     fi
 
-    local modename=$(vga_new_mode $x $y)
-    echo "modename=$modename"
+    echo "Add modename [$modename] into device [$display_device]"
     sudo xrandr --addmode "$display_device" $modename
 }
 
