@@ -603,10 +603,22 @@ function droid_proc_quit()
     droid_proc_signal "$@" 3
 }
 
+function droid_logcat_tee()
+{
+    logcatee $@
+}
+
+function droid_logcat_dump()
+{
+    logcatdump $@
+}
+
 function logcatee()
 {
     local parameters="$@"
-    local output="$HOME/droid.logcat.log"
+    local default_file="/tmp/android/logcat/$(date +%Y%m%d)/$(date +%H%M%S).log"
+    local output="$default_file"
+    mkdir -p $(dirname $default_file) > /dev/null
 
     local prompt="\nlogcat saved into $output\n"
 
