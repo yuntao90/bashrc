@@ -79,7 +79,7 @@ function is_number_only()
     local input="$@"
     # dump_value input
     if [ -n "$input" ] ; then
-        local filter_result="$(echo $input | egrep -o [0-9].?)"
+        local filter_result="$(echo $input | egrep -o '[0-9]*')"
         # dump_value filter_result
         if [ "$filter_result" = "$input" ] ; then
             return 0
