@@ -383,11 +383,12 @@ function droid_am_hprof()
     local conv_path="$PWD/$processname.conv.hprof"
     local hprof_size="0"
     local last_hprof_size=$hprof_size
-    local query_size_interval="0.3"
-    local max_size_not_increase_times="3"
+    local query_size_interval="0.1"
+    local max_size_not_increase_times="4"
     local size_not_increase_times="0"
-    local prompt
+    local prompt wait_time
     local first_wait_time="1"
+    local pid
     # dump_value target_device_path
     # dump_value target_path
     # dump_value conv_path
@@ -399,35 +400,72 @@ function droid_am_hprof()
         return;
     fi
 
+    # Acquire pid
+    pid=$(droid_proc_pid "$processname")
+
+    if [ -z "$pid" ] ; then
+        echo -e "Failed to dump hprof, process $processname not found."
+        return
+    fi
+
     # ensure permissions and dirs
     adb shell mkdir /data/local/tmp/hprof > /dev/null 2>&1
     adb shell chmod 777 /data/local/tmp/hprof > /dev/null 2>&1
+
+    # Start request dump heap
+    echo
+    echo -e "Request dumping hprof of $processname($pid) ... \c"
     adb shell am dumpheap $(droid_proc_pid "$processname") $target_device_path
-    echo -e "Just wait for a while...\c"
-    # Wait for hprof dump start.
-    sleep $first_wait_time
-    echo -e "\rCalculating $target_device_path size ..."
-    # query hprof size, ensure it can not increase anymore
+    echo -e "Done\n"
+
+    # Because of requesting, the hprof will be empty at first, so query size
+    # until it will not increase anymore.
+    echo -e "\rCalculating $target_device_path size"
+
     while [ true ]
     do
+        # Get hprof size
         hprof_size=$(adb shell du -s $target_device_path | awk '{print $'1'}')
+        # If size changed, clear $size_not_increase_times, else increase once.
         if [ "$hprof_size" = "$last_hprof_size" ] ; then
             size_not_increase_times=$(( $size_not_increase_times + 1 ))
         else
             size_not_increase_times="0"
         fi
         echo -e "\r$target_device_path ... $hprof_size\c"
-        # $(expr ${popLevel} '>' 0) -eq 1
+
+        # Not increase $size_not_increase_times, break it and pull hprof file.
         if [ $(expr ${size_not_increase_times} '>' $max_size_not_increase_times) -eq 1 ] ; then
+            # Still empty, device may be busy, tell user pull manually later.
+            if [ "$hprof_size" = "0" -o -z "$hprof_size" ] ; then
+                echo -e "\n"
+                echo -e "Device busy now, wait for dumping timeout, try to run commands below later:\n"
+                echo -e "adb pull $target_device_path"
+                echo
+                return
+            fi
             break;
         fi
+
         last_hprof_size=$hprof_size
+
+        # If hprof size = 0 or not created yet, make interval little longer.
+        if [ "$last_hprof_size" = "0" -o -z "$last_hprof_size" ] ; then
+            wait_time=$first_wait_time
+        else
+            wait_time=$query_size_interval
+        fi
+
+        # Loop sleep
+        sleep $wait_time
     done
+
     echo -e "\n"
     echo "Dump hprof to [$target_path]"
 
     adb pull $target_device_path $target_path
 
+    # Use hprof-conv convert file.
     if [ -f $target_path ] ; then
         prompt="Success dumped file on $target_path"
         if has_command hprof-conv ; then
@@ -441,8 +479,9 @@ function droid_am_hprof()
         echo
         return
     fi
+
     echo
-    echo "Failed to dump hprof for $processname"
+    echo "Failed to dump hprof for $processname($pid)"
 }
 
 function droid_proc_pid()
