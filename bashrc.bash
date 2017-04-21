@@ -533,5 +533,5 @@ function git_ps1_disable()
 }
 
 if [ -d "$HOME/tools/bin" ] ; then
-    PATH=$HOME/tools/bin:$PATH
+    export PATH=$HOME/tools/bin:$PATH
 fi
