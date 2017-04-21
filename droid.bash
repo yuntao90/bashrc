@@ -248,6 +248,8 @@ function droid_build_init()
         if [ -n "$jack_version" ] ; then
             droid_override_jackserver_heapsize
         fi
+        # ensure server started
+        jack-admin start-server > /dev/null
     fi
 }
 
@@ -269,9 +271,28 @@ function droid_override_jackserver_heapsize()
         new_size="$(expr $(expr `calculate_total_mem` \/ 4) \* 3)m"
     fi
 
-    export JACK_SERVER_VM_ARGUMENTS="$JACK_SERVER_VM_ARGUMENTS $DEFAULT_JACK_SERVER_VM_ARGUMENTS -Xmx$new_size"
-    echo "Resize jack heap size to $new_size , and restart jack server"
-    jack-restart-server
+    local new_arguments="$DEFAULT_JACK_SERVER_VM_ARGUMENTS -Xmx$new_size"
+
+    if [ -z "$JACK_SERVER_VM_ARGUMENTS" ] ; then
+        export JACK_SERVER_VM_ARGUMENTS="$new_arguments"
+        echo "Resize jack heap size to $new_size , and restart jack server"
+        local current_jack_server="`jack-admin list-server`"
+        if [ -z "$(echo "$current_jack_server" | grep "$JACK_SERVER_VM_ARGUMENTS")" ] ; then
+            jack-restart-server
+        fi
+        return
+    else
+        if [ -z "$(echo "$JACK_SERVER_VM_ARGUMENTS" | grep "\"$new_arguments")\"" ] ; then
+            export JACK_SERVER_VM_ARGUMENTS="$JACK_SERVER_VM_ARGUMENTS $new_arguments"
+            echo "Resize jack heap size to $new_size , and restart jack server"
+            local current_jack_server="`jack-admin list-server`"
+            if [ -z "$(echo "$current_jack_server" | grep "$JACK_SERVER_VM_ARGUMENTS")" ] ; then
+                jack-restart-server
+            fi
+            return
+        fi
+        echo "Already set heap size to $new_size"
+    fi
 }
 
 function find_droid_space_root()
