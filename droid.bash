@@ -208,6 +208,7 @@ function droid_build_init()
     if [ -n "$lunch_project" ] ; then
         lunch $lunch_project
         echo $lunch_project > .lunch_config
+        echo "$(date) -- $lunch_project" >> .lunch_config_history
     else
         lunch_project=`cat .lunch_config`
         lunch $lunch_project
@@ -218,6 +219,7 @@ function droid_build_init()
         if [ -z "$lunch_project" ] ; then
             lunch_project=`get_build_var TARGET_PRODUCT`-`get_build_var TARGET_BUILD_VARIANT`
             echo $lunch_project > .lunch_config
+            echo "$(date) -- $lunch_project" >> .lunch_config_history
         fi
     fi
 
@@ -275,18 +277,20 @@ function droid_override_jackserver_heapsize()
 
     if [ -z "$JACK_SERVER_VM_ARGUMENTS" ] ; then
         export JACK_SERVER_VM_ARGUMENTS="$new_arguments"
-        echo "Resize jack heap size to $new_size , and restart jack server"
         local current_jack_server="`jack-admin list-server`"
-        if [ -z "$(echo "$current_jack_server" | grep "$JACK_SERVER_VM_ARGUMENTS")" ] ; then
+        local trimed_args=$(echo $JACK_SERVER_VM_ARGUMENTS | sed -e "s?^-??g")
+        if [ -z "$(echo "$current_jack_server" | grep "$trimed_args")" ] ; then
+            echo "Resize jack heap size to $new_size , and restart jack server"
             jack-restart-server
         fi
         return
     else
         if [ -z "$(echo "$JACK_SERVER_VM_ARGUMENTS" | grep "\"$new_arguments")\"" ] ; then
             export JACK_SERVER_VM_ARGUMENTS="$JACK_SERVER_VM_ARGUMENTS $new_arguments"
-            echo "Resize jack heap size to $new_size , and restart jack server"
             local current_jack_server="`jack-admin list-server`"
-            if [ -z "$(echo "$current_jack_server" | grep "$JACK_SERVER_VM_ARGUMENTS")" ] ; then
+            local trimed_args=$(echo $JACK_SERVER_VM_ARGUMENTS | sed -e "s?^-??g")
+            if [ -z "$(echo "$current_jack_server" | grep "$trimed_args")" ] ; then
+                echo "Resize jack heap size to $new_size , and restart jack server"
                 jack-restart-server
             fi
             return
@@ -696,7 +700,7 @@ function logcatee()
 
 function logcatdump()
 {
-    logcatee -d
+    logcatee -d $@
 }
 
 function repo-silent-sync()

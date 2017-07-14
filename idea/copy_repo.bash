@@ -20,5 +20,6 @@ function copy_new_repo()
     git checkout -b repo_$new_branch origin/$new_branch
     git checkout repo_$new_branch
     cd ../../
-
 }
+
+echo "copy_new_repo [from_path] [new_branch] is available now"
