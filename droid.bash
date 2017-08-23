@@ -397,7 +397,7 @@ function droid_am_dump()
 
 function droid_am_focused()
 {
-    echo "$(droid_am_dump)" | grep mFocusedActivity
+    echo "$(droid_am_dump)" | grep ACTIVITY
 }
 
 function droid_am_hprof()
