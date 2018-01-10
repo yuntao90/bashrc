@@ -267,6 +267,7 @@ if [ $localLOGV = "true" ] ; then
     echo "Back directory in verbose mode"
     echo "Input params: " $@
 fi
+
 if [ ! $1 ] ; then
     if [ $localLOGV = true ] ; then
         echo "None of params, treat as cd .."
@@ -274,6 +275,10 @@ if [ ! $1 ] ; then
     cd ..
 else
     local popLevel=$(filter_numbers $1)
+    if [ -z "$popLevel" ] ; then
+        echo "bd: Bad input $@, expect number"
+        return
+    fi
     local popString="."
     if [ $localLOGV = true ] ; then
         echo "Parsed popLevel = ""\"${popLevel}\""
