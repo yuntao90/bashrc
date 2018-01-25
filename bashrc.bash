@@ -5,6 +5,7 @@
 [ -z "$PS1" ] && return
 
 BASHRC_PLUS_DIR=$(dirname $MY_BASHRC_PLUS)
+echo -e "\033[34mGathered bashrc at\033[0m at "$BASHRC_PLUS_DIR
 
 # Define it earlier for better.
 # use which to locate the linux command
@@ -116,11 +117,11 @@ function check_bashrc_env()
         echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
     fi
 
-    echo -e "\nOther suggested env:"
-    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_DEVICE
-    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_X
-    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_Y
-    check_env_and_print DEFAULT_JACK_SERVER_HEAPSIZE
+#    echo -e "\nOther suggested env:"
+#    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_DEVICE
+#    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_X
+#    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_Y
+#    check_env_and_print DEFAULT_JACK_SERVER_HEAPSIZE
 }
 
 if [ -f "$DROID_BASHRC" ] ; then
@@ -176,19 +177,23 @@ function sfind()
     find $find_options | grep $grep_options
 }
 
-# TODO, for more platforms
-if [ -z "$DEFAULT_SFIND_SELECT_VIEWER" ] ; then
-    DEFAULT_SFIND_SELECT_VIEWER="vi"
-fi
-
 function sfind-select()
 {
+    check_env_and_print DEFAULT_SFIND_SELECT_VIEWER
     local selections
     local sfind_options="$@"
     local index=0
     local selector selectors print_items
     # Run sfind $@, and collect results.
     local results=`sfind $sfind_options`
+    local viewer=$DEFAULT_SFIND_SELECT_VIEWER
+
+    # Fallback solution for default viewer,
+    # TODO, maybe support more platforms
+    if [ -z "$viewer" ] ; then
+        viewer="vi"
+    fi
+
     # Ensure the results was right.
     if [ -z "$results" ] ; then
         echo "sfind $sfind_options got nothing"
@@ -204,8 +209,8 @@ function sfind-select()
     done
     if [ "$index" = "1" ] ; then
         # If only one item was found, open it directly.
-        echo -e "sfind [$sfind_options] only found\n\n  \t$results\n\nuse [$DEFAULT_SFIND_SELECT_VIEWER] to open\n"
-        $DEFAULT_SFIND_SELECT_VIEWER $results
+        echo -e "sfind [$sfind_options] only found\n\n  \t$results\n\nuse [$viewer] to open\n"
+        $viewer $results
         return
     else
         echo -e "sfind [$sfind_options] found $index items\n"
@@ -215,7 +220,7 @@ function sfind-select()
     echo
 
     # Wait for user input.
-    echo -n "Which files would you want to view with [$DEFAULT_SFIND_SELECT_VIEWER] ? "
+    echo -n "Which files would you want to view with [$viewer] ? "
     read selector
     # echo "User input $selector"
     if [ -z "$selector" ] ; then
@@ -226,7 +231,7 @@ function sfind-select()
     # User said all of them.
     if [ "$selector" = "$index" ] ; then
         # echo "Open all of them"
-        $DEFAULT_SFIND_SELECT_VIEWER $results
+        $viewer $results
         return
     fi
 
@@ -389,6 +394,9 @@ function vga_new_mode()
 # Param 2 : modename added previously
 function vga_add_mode()
 {
+    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_DEVICE
+    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_X
+    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_Y
     local display_device="$DEFAULT_ADDITIONAL_DISPLAY_DEVICE"
     local x y
     local modename

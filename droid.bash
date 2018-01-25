@@ -263,6 +263,7 @@ function jack-restart-server()
 
 function droid_override_jackserver_heapsize()
 {
+    check_env_and_print DEFAULT_JACK_SERVER_HEAPSIZE
     local new_size=$@
 
     if [ -z "$new_size" ] ; then
