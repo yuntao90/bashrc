@@ -476,7 +476,7 @@ function getnameip()
     if [ -n "$1" ] ; then
         username="$1"
     fi
-    local device="eth0"
+    local device
     if [ -n "$2" ] ; then
         device="$1"
     fi
