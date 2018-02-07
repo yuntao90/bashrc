@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Android
+sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip
+
+# Other tools
+sudo apt-get install openjdk-8-jdk vim openssh-server gedit-plugins geany geany-plugins unrar rdesktop meld gitk sshfs p7zip
+sudo apt-get install smbnetfs smbclient
+sudo apt-get install gitk
+sudo apt-get install alacarte
+
+# Language packs
+sudo apt-get install libreoffice-help-en-gb \
+libreoffice-l10n-en-za \
+libreoffice-l10n-en-gb \
+fcitx-frontend-gtk3 \
+fonts-arphic-ukai \
+fcitx-ui-qimpanel \
+fonts-arphic-uming \
+hunspell-en-za \
+thunderbird-locale-en-gb \
+fcitx-pinyin \
+fcitx-table-wubi \
+language-pack-gnome-zh-hans \
+hunspell-en-ca \
+hunspell-en-au \
+language-pack-zh-hans \
+libreoffice-help-zh-cn \
+firefox-locale-zh-hans \
+thunderbird-locale-zh-cn \
+fcitx-frontend-qt4 \
+fcitx-module-cloudpinyin \
+hunspell-en-gb \
+thunderbird-locale-zh-hans \
+fcitx-sunpinyin \
+libreoffice-l10n-zh-cn \
+mythes-en-au \
+hyphen-en-gb \
+fcitx-ui-classic \
+fcitx-frontend-qt5 \
+fcitx \
+fcitx-frontend-gtk2
+
+# For openjdk-7
+# sudo add-apt-repository ppa:openjdk-r/ppa
+# sudo apt-get update
+# sudo apt-get install openjdk-7-jdk
+
+# For java-6-sun, may not stable
+# http://www.oracle.com/technetwork/java/javase/downloads/java-archive-downloads-javase6-419409.html
+# http://www.oracle.com/technetwork/java/javase/downloads/jdk6-jsp-136632.html
