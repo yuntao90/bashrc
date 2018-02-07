@@ -253,7 +253,7 @@ function sfind-select()
         fi
     done
     # echo "executing $DEFAULT_SFIND_SELECT_VIEWER $results"
-    $DEFAULT_SFIND_SELECT_VIEWER $results
+    $viewer $results
 }
 # function sfind()
 # {
