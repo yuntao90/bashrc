@@ -548,3 +548,100 @@ function git_ps1_disable()
 if [ -d "$HOME/tools/bin" ] ; then
     export PATH=$HOME/tools/bin:$PATH
 fi
+
+# TODO: Exception handling: Conflicts
+# TODO: Auto-push / upload
+function git_auto_cherry_pick()
+{
+    local pick_revision remote pick_branches arg dry_run=0
+
+    # Validate revision
+    pick_revision=$(git rev-parse --verify $1 2> /dev/null)
+
+    # If revision is not pass
+    if [ -z "$pick_revision" ] ; then
+        pick_revision=$(git rev-parse HEAD)
+    else
+        shift
+    fi
+
+    while [[ $# -gt 0 ]] ;
+    do
+    case $1 in
+        -b|--branch)
+	pick_branches+=("$2")
+	shift
+	shift
+        ;;
+	-r|--remote)
+	remote="$2"
+	shift
+	shift
+	;;
+	--dry-run)
+	dry_run=1
+	shift
+	;;
+        *)
+	shift
+	;;
+    esac
+    done
+
+    local current_branch pick_branch target_remote_branch current_branch_idx=0
+
+    current_branch=$(git rev-parse --abbrev-ref HEAD)
+    if [ -z "$remote" ] ; then
+        remote=$(git config branch.$current_branch.remote)
+    fi
+
+    if [ -z "$remote" ] ; then
+        echo "Can not find remote automaticly, use --remote [your_remote]"
+        return
+    fi
+
+    if [ "$dry_run" -eq 1 ] ; then
+        dump_value remote
+	dump_value pick_revision
+	echo "branches = ${pick_branches[*]}"
+    fi
+
+
+    echo "We will cherry-pick $pick_revision to ${#pick_branches[@]} branches"
+    for pick_branch in ${pick_branches[*]}
+    do
+        echo
+        echo "Cherry-picking to $pick_branch ... ($(expr $current_branch_idx + 1)/${#pick_branches[@]})"
+
+        target_remote_branch=$remote/$pick_branch
+        if [ -z "$(git rev-parse --verify $target_remote_branch 2> /dev/null)" ] ; then
+	    echo "WARNING: $target_remote_branch not exists, skip."
+	    current_branch_idx=$(expr $current_branch_idx + 1)
+	    continue
+	fi
+
+        branch -D local_tmp_$pick_branch 2>/dev/null
+        echo "(Re)Creating local branch local_tmp_$pick_branch to tracking $target_remote_branch ..."
+        dry_run_if_needed "$dry_run" git checkout -b local_tmp_$pick_branch $target_remote_branch
+        dry_run_if_needed "$dry_run" git cherry-pick $pick_revision
+        current_branch_idx=$(expr $current_branch_idx + 1)
+    done
+}
+
+function dry_run_if_needed()
+{
+    local dry_run_enabled="$1"
+
+    if [ "$dry_run_enabled" -ne 1 ] && [ "$dry_run_enabled" -ne 0 ] ; then
+        echo "Paramter #1 must be 1 or 0 to enable/disable dry-run"
+        return
+    fi
+
+    shift
+
+    if [ "$dry_run_enabled" -eq 1 ] ; then
+        echo "Will run \"$@\""
+    else
+        $@
+    fi
+}
