@@ -588,7 +588,25 @@ function git_auto_cherry_pick()
     esac
     done
 
-    local current_branch pick_branch target_remote_branch current_branch_idx=0
+    local pick_branch
+
+    if [ -z "${pick_branches[*]}" ] ; then
+        check_env_and_print DEFAULT_AUTO_CHERRY_PICK_BRANCHES
+        pick_branches=( $DEFAULT_AUTO_CHERRY_PICK_BRANCHES )
+	if [ -z "${pick_branches[*]}" ] ; then
+	    echo "No branch to pick, abort"
+	    return
+	else
+	    echo "Use default env DEFAULT_AUTO_CHERRY_PICK_BRANCHES to auto-cherry-picking. Now contains:"
+	    for pick_branch in "${pick_branches[*]}"
+	    do
+	        echo -e "$pick_branch"
+	    done
+	    echo -e "You can modify it manually by export.\n"
+	fi
+    fi
+
+    local current_branch target_remote_branch current_branch_idx=0
 
     current_branch=$(git rev-parse --abbrev-ref HEAD)
     if [ -z "$remote" ] ; then
@@ -601,9 +619,13 @@ function git_auto_cherry_pick()
     fi
 
     if [ "$dry_run" -eq 1 ] ; then
+        echo
+	echo "******** DebugInfo ********"
         dump_value remote
 	dump_value pick_revision
 	echo "branches = ${pick_branches[*]}"
+	echo "******** ********* ********"
+	echo
     fi
 
 
