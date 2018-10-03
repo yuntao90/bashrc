@@ -545,6 +545,23 @@ function git_ps1_disable()
     PROMPT_COMMAND=$(echo $PROMPT_COMMAND | sed -e "s?$GIT_PS1_PROMPT_COMMAND??g")
 }
 
+function cgitdir()
+{
+    local HERE=$PWD
+    local T
+
+    while [ "$PWD" != "/" ] ; do
+        T=$PWD
+        if [ -d "$T/.git" ] ; then
+            cd $T
+            return
+        fi
+        cd ..
+    done
+    echo "Failed to find .git"
+    cd $HERE
+}
+
 if [ -d "$HOME/tools/bin" ] ; then
     export PATH=$HOME/tools/bin:$PATH
 fi
