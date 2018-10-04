@@ -96,26 +96,32 @@ alias l='ls -CF'
 
 # ------------------------------
 
+LOCAL_ENV_BASHRC=$BASHRC_PLUS_DIR/local_env.bash
+if [ -f "$LOCAL_ENV_BASHRC" ] ; then
+    source $LOCAL_ENV_BASHRC
+fi
+
 DROID_BASHRC=$BASHRC_PLUS_DIR/droid.bash
+if [ -f "$DROID_BASHRC" ] ; then
+    source $DROID_BASHRC
+fi
 
 # load bash completion
 MY_BASH_COMPLETION=$BASHRC_PLUS_DIR/bash_completion/bash_completion
-
 if [ -f "$MY_BASH_COMPLETION" ] ; then
     source $MY_BASH_COMPLETION
 fi
 
 function check_bashrc_env()
 {
-    if [ -f "$LOCAL_ENV_BASHRC" ] ; then
-        source $LOCAL_ENV_BASHRC
-    else
+    if [ ! -f "$LOCAL_ENV_BASHRC" ] ; then
         echo -e "\n\033[34mNotice: \033[32mYou can edit your private env into \033[33m$LOCAL_ENV_BASHRC\033[32m, that file can be ignored to git\033[0m\n"
     fi
 
-    if [ -z "$ANDROID_SDK" ] ; then
-        echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
-    fi
+#    Moved to droid.bash
+#    if [ -z "$ANDROID_SDK" ] ; then
+#        echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
+#    fi
 
 #    echo -e "\nOther suggested env:"
 #    check_env_and_print DEFAULT_ADDITIONAL_DISPLAY_DEVICE
@@ -124,34 +130,9 @@ function check_bashrc_env()
 #    check_env_and_print DEFAULT_JACK_SERVER_HEAPSIZE
 }
 
-if [ -f "$DROID_BASHRC" ] ; then
-    source $DROID_BASHRC
-fi
-
-LOCAL_ENV_BASHRC=$BASHRC_PLUS_DIR/local_env.bash
-
 check_bashrc_env
 
 MY_BASHRC_FILES="$MY_BASHRC_PLUS $DROID_BASHRC $LOCAL_ENV_BASHRC"
-
-function locate-recent-android-sdk-build-tools()
-{
-    local build_tools="$(ls $ANDROID_SDK/build-tools | grep -e ^[0-9] | xargs echo)"
-
-    local space_count=$(expr $(expr $(echo ${build_tools} | grep -o " " | wc -m) / 2) + 1)
-
-    echo $build_tools | cut -d " " -f $space_count
-}
-
-# alias the android-tools
-if [ -n "$ANDROID_SDK" ] ; then
-    export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
-# $ANDROID_SDK/build-tools/*/ <- TODO how can we include this?
-# TODO temp solution
-    export PATH=$ANDROID_SDK/build-tools/$(locate-recent-android-sdk-build-tools ):$PATH
-else
-    echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
-fi
 
 # alias quick grep
 alias psgrep='ps | grep'

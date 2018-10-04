@@ -1,5 +1,28 @@
 #!/bin/bash
 
+if [ -z "$ANDROID_SDK" ] ; then
+    echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
+fi
+
+function locate-recent-android-sdk-build-tools()
+{
+    local build_tools="$(ls $ANDROID_SDK/build-tools | grep -e ^[0-9] | xargs echo)"
+
+    local space_count=$(expr $(expr $(echo ${build_tools} | grep -o " " | wc -m) / 2) + 1)
+
+    echo $build_tools | cut -d " " -f $space_count
+}
+
+# alias the android-tools
+if [ -n "$ANDROID_SDK" ] ; then
+    export PATH=$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools:$PATH
+# $ANDROID_SDK/build-tools/*/ <- TODO how can we include this?
+# TODO temp solution
+    export PATH=$ANDROID_SDK/build-tools/$(locate-recent-android-sdk-build-tools ):$PATH
+else
+    echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
+fi
+
 ADB_BASHRC=$(dirname $MY_BASHRC_PLUS)/adb.bash
 DEFAULT_JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation"
 
