@@ -586,22 +586,22 @@ function git_auto_cherry_pick()
     do
     case $1 in
         -b|--branch)
-	pick_branches+=("$2")
-	shift
-	shift
+    pick_branches+=("$2")
+    shift
+    shift
         ;;
-	-r|--remote)
-	remote="$2"
-	shift
-	shift
-	;;
-	--dry-run)
-	dry_run=1
-	shift
-	;;
+    -r|--remote)
+    remote="$2"
+    shift
+    shift
+    ;;
+    --dry-run)
+    dry_run=1
+    shift
+    ;;
         *)
-	shift
-	;;
+    shift
+    ;;
     esac
     done
 
@@ -610,17 +610,17 @@ function git_auto_cherry_pick()
     if [ -z "${pick_branches[*]}" ] ; then
         check_env_and_print DEFAULT_AUTO_CHERRY_PICK_BRANCHES
         pick_branches=( $DEFAULT_AUTO_CHERRY_PICK_BRANCHES )
-	if [ -z "${pick_branches[*]}" ] ; then
-	    echo "No branch to pick, abort"
-	    return
-	else
-	    echo "Use default env DEFAULT_AUTO_CHERRY_PICK_BRANCHES to auto-cherry-picking. Now contains:"
-	    for pick_branch in "${pick_branches[*]}"
-	    do
-	        echo -e "$pick_branch"
-	    done
-	    echo -e "You can modify it manually by export.\n"
-	fi
+    if [ -z "${pick_branches[*]}" ] ; then
+        echo "No branch to pick, abort"
+        return
+    else
+        echo "Use default env DEFAULT_AUTO_CHERRY_PICK_BRANCHES to auto-cherry-picking. Now contains:"
+        for pick_branch in "${pick_branches[*]}"
+        do
+            echo -e "$pick_branch"
+        done
+        echo -e "You can modify it manually by export.\n"
+    fi
     fi
 
     local current_branch target_remote_branch current_branch_idx=0
@@ -637,12 +637,12 @@ function git_auto_cherry_pick()
 
     if [ "$dry_run" -eq 1 ] ; then
         echo
-	echo "******** DebugInfo ********"
+    echo "******** DebugInfo ********"
         dump_value remote
-	dump_value pick_revision
-	echo "branches = ${pick_branches[*]}"
-	echo "******** ********* ********"
-	echo
+    dump_value pick_revision
+    echo "branches = ${pick_branches[*]}"
+    echo "******** ********* ********"
+    echo
     fi
 
 
@@ -654,10 +654,10 @@ function git_auto_cherry_pick()
 
         target_remote_branch=$remote/$pick_branch
         if [ -z "$(git rev-parse --verify $target_remote_branch 2> /dev/null)" ] ; then
-	    echo "WARNING: $target_remote_branch not exists, skip."
-	    current_branch_idx=$(expr $current_branch_idx + 1)
-	    continue
-	fi
+        echo "WARNING: $target_remote_branch not exists, skip."
+        current_branch_idx=$(expr $current_branch_idx + 1)
+        continue
+    fi
 
         dry_run_if_needed "$dry_run" git branch -D local_tmp_$pick_branch 2>/dev/null
         echo "(Re)Creating local branch local_tmp_$pick_branch to tracking $target_remote_branch ..."
