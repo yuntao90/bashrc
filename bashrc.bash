@@ -659,7 +659,7 @@ function git_auto_cherry_pick()
 	    continue
 	fi
 
-        branch -D local_tmp_$pick_branch 2>/dev/null
+        dry_run_if_needed "$dry_run" git branch -D local_tmp_$pick_branch 2>/dev/null
         echo "(Re)Creating local branch local_tmp_$pick_branch to tracking $target_remote_branch ..."
         dry_run_if_needed "$dry_run" git checkout -b local_tmp_$pick_branch $target_remote_branch
         dry_run_if_needed "$dry_run" git cherry-pick $pick_revision
