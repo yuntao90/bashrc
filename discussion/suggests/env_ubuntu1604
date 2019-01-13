@@ -9,6 +9,9 @@ sudo apt-get install smbnetfs smbclient
 sudo apt-get install gitk
 sudo apt-get install alacarte
 
+# Other codecs
+sudo apt-get install gstreamer1.0-libav gstreamer1.0-plugins-bad
+
 # Language packs
 sudo apt-get install libreoffice-help-en-gb \
 libreoffice-l10n-en-za \
@@ -40,6 +43,12 @@ fcitx-ui-classic \
 fcitx-frontend-qt5 \
 fcitx \
 fcitx-frontend-gtk2
+
+# Image tools: GIMP
+sudo apt-get install gimp
+
+# VNC access
+# gsettings set org.gnome.Vino require-encryption false
 
 # For openjdk-7
 # sudo add-apt-repository ppa:openjdk-r/ppa
