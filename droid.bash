@@ -42,7 +42,7 @@ alias parse-apk-name='echo `cat $(findmakefile) | grep LOCAL_PACKAGE_NAME |egrep
 alias parse-assume-priv-app='cat $(findmakefile) | grep LOCAL_PRIVILEGED_MODULE | egrep -o "= .*" | egrep -o "[A-Za-z0-9].*"'
 
 # Alias adb-restart-server
-alias adb-restart-server='sudo adb kill-server ;sudo `which adb` start-server; adb devices'
+alias adb-restart-server='adb kill-server ;`which adb` start-server; adb devices'
 
 # Alias android 4.1 Compatibility-Test-Suite
 #alias cts-4.2='. /home/apuser/4.1cts/tools/cts-tradefed'
@@ -741,6 +741,27 @@ function pushmodule()
         echo "Pushing $full_path to $target_path"
         adb push $full_path $target_path
     fi
+}
+
+function parse_avc_denied_oneline()
+{
+    local input="$@"
+    if [ -z "$(echo "$input" | grep avc:)" ] ; then
+        echo "# No avc found."
+        return
+    fi
+
+    # Trim input into avc: { xxx } xxx
+    local start_with_avc="$(echo "$input" | grep -o avc:.*)"
+
+    local sepolicy_action="$(echo "$input" | grep -o  "{ [a-zA-Z0-9_]* }" | sed -e "s?{\|}??g")"
+    local sepolicy_scontext="$(echo "$input" | grep -o "scontext=[^( )]*" | sed -e "s?scontext=\|u:r:\|u:object_r:\|:s0??g")"
+    local sepolicy_tcontext="$(echo "$input" | grep -o "tcontext=[^( )]*" | sed -e "s?tcontext=\|u:r:\|u:object_r:\|:s0??g")"
+    local sepolicy_tclass="$(echo "$input" | grep -o "tclass=[^( )]*" | sed -e "s?tclass=??g")"
+
+    echo
+    echo "# $input"
+    echo "allow $sepolicy_scontext $sepolicy_tcontext:$sepolicy_tclass { $sepolicy_action };"
 }
 
 # Temporary show the helpful message about how to download them
