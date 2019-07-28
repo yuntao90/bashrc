@@ -1,0 +1,9 @@
+android_app {
+    name: "%APPLICATION_NAME%",
+    srcs: ["src/**/*.java"],
+    platform_apis: true,
+    // certificate: "platform",
+    dex_preopt: {
+        enabled: false,
+    }
+}
