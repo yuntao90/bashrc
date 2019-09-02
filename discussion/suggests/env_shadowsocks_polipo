@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Install shadowsocks and polipo
+sudo apt-get install -y python3-pip libsodium-dev polipo
+sudo pip3 install https://github.com/shadowsocks/shadowsocks/archive/master.zip -U
+
+# Configure polipo with shadowsocks
+sudo sh -c "echo >> /etc/polipo/config"
+sudo sh -c "echo 'socksParentProxy = \"localhost:1080\"' >> /etc/polipo/config"
+sudo sh -c "echo 'socksProxyType = socks5' >> /etc/polipo/config"
+
+# Enable polipo
+sudo systemctl enable polipo

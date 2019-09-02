@@ -1,21 +1,19 @@
 #!/bin/bash
 
 # Android
-sudo apt-get install git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip
+sudo apt-get install -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip
 
 # Other tools
-sudo apt-get install openjdk-8-jdk vim openssh-server gedit-plugins geany geany-plugins unrar rdesktop meld gitk sshfs p7zip cifs-utils
-sudo apt-get install smbnetfs smbclient
-sudo apt-get install gitk
-sudo apt-get install alacarte
+sudo apt-get install -y openjdk-8-jdk vim openssh-server gedit-plugins geany geany-plugins unrar rdesktop meld gitk sshfs p7zip cifs-utils
+sudo apt-get install -y smbnetfs smbclient
+sudo apt-get install -y gitk
+sudo apt-get install -y alacarte
 
 # Other codecs
-sudo apt-get install gstreamer1.0-libav gstreamer1.0-plugins-bad
+sudo apt-get install -y gstreamer1.0-libav gstreamer1.0-plugins-bad
 
 # Language packs
-sudo apt-get install libreoffice-help-en-gb \
-libreoffice-l10n-en-za \
-libreoffice-l10n-en-gb \
+sudo apt-get install -y \
 fcitx-frontend-gtk3 \
 fonts-arphic-ukai \
 fcitx-ui-qimpanel \
@@ -28,7 +26,6 @@ language-pack-gnome-zh-hans \
 hunspell-en-ca \
 hunspell-en-au \
 language-pack-zh-hans \
-libreoffice-help-zh-cn \
 firefox-locale-zh-hans \
 thunderbird-locale-zh-cn \
 fcitx-frontend-qt4 \
@@ -36,7 +33,6 @@ fcitx-module-cloudpinyin \
 hunspell-en-gb \
 thunderbird-locale-zh-hans \
 fcitx-sunpinyin \
-libreoffice-l10n-zh-cn \
 mythes-en-au \
 hyphen-en-gb \
 fcitx-ui-classic \
@@ -44,8 +40,16 @@ fcitx-frontend-qt5 \
 fcitx \
 fcitx-frontend-gtk2
 
+# For libreoffice lang pack
+#sudo apt-get install \
+#libreoffice-help-en-gb \
+#libreoffice-l10n-en-za \
+#libreoffice-l10n-en-gb \
+#libreoffice-help-zh-cn \
+#libreoffice-l10n-zh-cn
+
 # Image tools: GIMP
-sudo apt-get install gimp
+sudo apt-get install -y gimp
 
 # VNC access
 # gsettings set org.gnome.Vino require-encryption false
