@@ -1,10 +1,20 @@
 #!/bin/bash
 
 # Some basic dependencies
-sudo apt-get install schedtool autoconf libsysfs-dev libtool clang npm node-typescript maven
+sudo apt-get install -y schedtool autoconf libsysfs-dev libtool clang npm node-typescript maven
 
 # yarn command supports
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt update
 sudo apt install yarn
+
+sudo apt-get install -y python-pip
+sudo apt-get install -y pkg-config libarchive-dev libavdevice-dev libavfilter-dev
+
+pip install pycapnp
+pip install requests
+
+curl https://raw.githubusercontent.com/commaai/openpilot-tools/master/requirements.txt > requirements.txt
+pip install -r requirements.txt
+rm requirements.txt
