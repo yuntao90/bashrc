@@ -1,7 +1,14 @@
 #!/bin/bash
 
 # Some basic dependencies
-sudo apt-get install -y schedtool autoconf libsysfs-dev libtool clang npm node-typescript maven
+sudo apt-get install -y schedtool autoconf libsysfs-dev libtool clang npm node-typescript maven clang-3.8
+
+# From openpilot-tools Requirements
+sudo apt install -y ffmpeg libavformat-dev libavcodec-dev libavdevice-dev libavutil-dev libswscale-dev libavresample-dev libavfilter-dev
+
+sudo apt install -y libarchive-dev
+
+sudo apt install -y python-qt4
 
 # yarn command supports
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -12,9 +19,11 @@ sudo apt install yarn
 sudo apt-get install -y python-pip
 sudo apt-get install -y pkg-config libarchive-dev libavdevice-dev libavfilter-dev
 
-pip install pycapnp
-pip install requests
+pip install pycapnp zmq requests libusb1 cffi pyyaml scipy jinja2
 
 curl https://raw.githubusercontent.com/commaai/openpilot-tools/master/requirements.txt > requirements.txt
 pip install -r requirements.txt
+curl https://github.com/commaai/openpilot/blob/devel/panda/requirements.txt > requirements.txt
+pip install -r requirements.txt
 rm requirements.txt
+
