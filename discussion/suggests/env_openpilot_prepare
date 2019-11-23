@@ -21,11 +21,80 @@ sudo apt-get install -y pkg-config libarchive-dev libavdevice-dev libavfilter-de
 
 pip install pycapnp zmq requests libusb1 cffi pyyaml scipy jinja2
 
+# Copy from EON pip list
+pip install setproctitle PyJWT asn1crypto \
+astroid \
+atomicwrites \
+backports.functools-lru-cache \
+certifi \
+cffi \
+chardet \
+Click \
+configparser \
+contextlib2 \
+crcmod \
+cryptography \
+Cython \
+enum34 \
+Flask \
+futures \
+gunicorn \
+hexdump \
+idna \
+ipaddress \
+isort \
+itsdangerous \
+Jinja2 \
+json-rpc \
+lazy-object-proxy \
+libusb1 \
+Logentries \
+MarkupSafe \
+mccabe \
+mpmath \
+nose \
+numpy \
+overpy \
+pip \
+pipenv \
+psutil \
+pycapnp \
+pycparser \
+pycryptodome \
+pyflakes \
+PyJWT \
+pylint \
+pyserial \
+python-dateutil \
+PyYAML \
+pyzmq \
+raven \
+requests \
+setproctitle \
+setuptools \
+singledispatch \
+six \
+smbus2 \
+sympy \
+tqdm \
+typing \
+urllib3 \
+utm \
+virtualenv \
+virtualenv-clone \
+websocket-client \
+Werkzeug \
+wrapt
+
+sudo apt-get install can-utils gcc-arm-none-eabi dkms
+
 curl https://raw.githubusercontent.com/commaai/openpilot-tools/master/requirements.txt > requirements.txt
 pip install -r requirements.txt
-curl https://github.com/commaai/openpilot/blob/devel/panda/requirements.txt > requirements.txt
+curl https://raw.githubusercontent.com/commaai/openpilot/devel/panda/requirements.txt > requirements.txt
 pip install -r requirements.txt
 rm requirements.txt
+
+
 
 #curl -O https://capnproto.org/capnproto-c++-0.6.1.tar.gz
 #tar xvf capnproto-c++-0.6.1.tar.gz
