@@ -11,13 +11,18 @@ sudo apt install -y libarchive-dev
 sudo apt install -y python-qt4
 
 # yarn command supports
+if [ -z "`which yarn`" ] ; then
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 sudo apt update
-sudo apt install yarn
+sudo apt install -y yarn
+fi
 
 sudo apt-get install -y python-pip
-sudo apt-get install -y pkg-config libarchive-dev libavdevice-dev libavfilter-dev
+sudo apt-get install -y pkg-config libarchive-dev libavdevice-dev libavfilter-dev libeigen3-dev libjpeg-dev
+sudo apt-get install -y libfreetype6-dev libpng-dev
+
+sudo apt-get install -y libzmq3-dev libczmq-dev libcapnp-dev
 
 pip install pycapnp zmq requests libusb1 cffi pyyaml scipy jinja2
 
@@ -90,8 +95,8 @@ sudo apt-get install can-utils gcc-arm-none-eabi dkms
 
 curl https://raw.githubusercontent.com/commaai/openpilot-tools/master/requirements.txt > requirements.txt
 pip install -r requirements.txt
-curl https://raw.githubusercontent.com/commaai/openpilot/devel/panda/requirements.txt > requirements.txt
-pip install -r requirements.txt
+#curl https://raw.githubusercontent.com/commaai/openpilot/devel/panda/requirements.txt > requirements.txt
+#pip install -r requirements.txt
 rm requirements.txt
 
 
