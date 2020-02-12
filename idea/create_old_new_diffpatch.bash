@@ -57,4 +57,4 @@ function create_old_new_diff_patch()
     echo Done
 }
 
-echo create_old_new_diff_patch is available
+print_if_bashrc_ready "create_old_new_diff_patch is available"

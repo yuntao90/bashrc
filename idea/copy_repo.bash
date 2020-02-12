@@ -68,4 +68,4 @@ function copy_new_repo()
     echo All done.
 }
 
-echo "copy_new_repo [options...] <from_path> <new_branch> is available now"
+print_if_bashrc_ready "copy_new_repo [options...] <from_path> <new_branch> is available now"

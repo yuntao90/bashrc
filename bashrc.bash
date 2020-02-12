@@ -1,5 +1,17 @@
 #!/bin/bash
 
+function bashrc_loaded()
+{
+    return -1
+}
+
+function print_if_bashrc_ready()
+{
+    if bashrc_loaded ; then
+        echo $@
+    fi
+}
+
 # ----- built-in for Ubuntu -----
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -664,4 +676,11 @@ function dry_run_if_needed()
     else
         $@
     fi
+}
+
+source $BASHRC_PLUS_DIR/idea/stable/*
+
+function bashrc_loaded()
+{
+    return 0
 }
