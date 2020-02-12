@@ -1,8 +1,40 @@
 
 function copy_new_repo()
 {
-    local origin_dir="$1"
-    local new_branch="$2"
+    local dry_run=false no_fetch=false
+
+    while [[ $# -gt 0 ]] ; do
+        case $1 in
+        --no-fetch|-l)
+            no_fetch=true
+        shift;;
+        --dry-run|-d)
+            dry_run=true
+        shift;;
+        -*)
+            echo "Not supported options: $1"
+            return 1
+            ;;
+        *)
+        break;;
+        esac
+    done
+
+    local origin_dir=$1
+    local new_branch=$2
+
+    if [ -z "$origin_dir" -o -z "$new_branch" ] ; then
+        echo FAILED: Some necessary parameters not defined:
+        echo origin_dir=$origin_dir
+        echo new_branch=$new_branch
+        return -1
+    fi
+
+    if $dry_run ; then
+        echo Only print variables, not support print raw command currently
+        echo origin_dir=$origin_dir, new_branch=$new_branch, no_fetch=$no_fetch
+        return 0
+    fi
 
     mkdir $new_branch
     cd $new_branch
@@ -26,7 +58,9 @@ function copy_new_repo()
 
     cd manifests
     echo Fetching origin to check updates ...
-    git fetch origin
+    if ! $no_fetch ; then
+        git fetch origin
+    fi
     echo Creating new brach for tracking origin/$new_branch ...
     git checkout -b repo_$new_branch origin/$new_branch
     git checkout repo_$new_branch
@@ -34,4 +68,4 @@ function copy_new_repo()
     echo All done.
 }
 
-echo "copy_new_repo [from_path] [new_branch] is available now"
+echo "copy_new_repo [options...] <from_path> <new_branch> is available now"
