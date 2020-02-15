@@ -13,6 +13,7 @@ function copy_new_repo()
         shift;;
         --link-projects|-ln)
             link_projects=true
+            shift;;
         -*)
             echo "Not supported options: $1"
             return 1

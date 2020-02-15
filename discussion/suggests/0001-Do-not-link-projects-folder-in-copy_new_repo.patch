@@ -1,0 +1,31 @@
+From 1a914fca547158c18fcd3c7c54296c8febdb0066 Mon Sep 17 00:00:00 2001
+From: Duke <x_duke@aliyun.com>
+Date: Sun, 29 Sep 2019 00:51:51 +0800
+Subject: [PATCH] Do not link projects folder in copy_new_repo
+
+When changing remote, projects folder may be conflicted
+with the new remote, and receive promte with --force-sync,
+but actually can not resolve the root-cause.
+
+So do not link the projects.
+---
+ idea/copy_repo.bash | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/idea/copy_repo.bash b/idea/copy_repo.bash
+index 6c57cf1..c4ef35a 100644
+--- a/idea/copy_repo.bash
++++ b/idea/copy_repo.bash
+@@ -9,7 +9,8 @@ function copy_new_repo()
+     mkdir .repo
+     cd .repo
+     ln -s ../../$origin_dir/.repo/project-objects
+-    ln -s ../../$origin_dir/.repo/projects
++    # No projects link, may be conflicted when changing remote
++    # ln -s ../../$origin_dir/.repo/projects
+     ln -s ../../$origin_dir/.repo/repo
+     ln -s ../../$origin_dir/.repo/manifests.git
+     cp -r ../../$origin_dir/.repo/manifests ./
+-- 
+2.17.1
+
