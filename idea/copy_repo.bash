@@ -1,7 +1,7 @@
 
 function copy_new_repo()
 {
-    local dry_run=false no_fetch=false
+    local dry_run=false no_fetch=false link_projects=false
 
     while [[ $# -gt 0 ]] ; do
         case $1 in
@@ -11,6 +11,8 @@ function copy_new_repo()
         --dry-run|-d)
             dry_run=true
         shift;;
+        --link-projects|-ln)
+            link_projects=true
         -*)
             echo "Not supported options: $1"
             return 1
@@ -42,13 +44,16 @@ function copy_new_repo()
     cd .repo
     echo Linking .repo/project-objects ...
     ln -s ../../$origin_dir/.repo/project-objects
-#    ln -s ../../$origin_dir/.repo/projects
 
-    # Use cp -rd , do not link to original dir, and
-    # --force-sync maybe work in future, otherwise
-    # it will be affect the original one.
-    echo Copying .repo/projects ...
-    cp -rd ../../$origin_dir/.repo/projects ./
+    if $link_projects ; then
+        ln -s ../../$origin_dir/.repo/projects
+    else
+        # Use cp -rd , do not link to original dir, and
+        # --force-sync maybe work in future, otherwise
+        # it will be affect the original one.
+        echo Copying .repo/projects ...
+        cp -rd ../../$origin_dir/.repo/projects ./
+    fi
 
     echo Linking other related files ...
     ln -s ../../$origin_dir/.repo/repo
