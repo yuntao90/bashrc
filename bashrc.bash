@@ -435,7 +435,7 @@ function vga_add_mode()
 
 function get_available_inet_devices()
 {
-    ifconfig | grep ^[a-zA-Z0-9] | awk '{print $1}'
+    ifconfig | grep ^[a-zA-Z0-9] | awk '{print $1}' | sed -e 's?:$??g'
 }
 
 # Get the simple ip address instead of ifconfig. Only support for ipv4.
