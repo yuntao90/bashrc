@@ -256,6 +256,52 @@ function sfind-select()
 #------------------------------transport or login with remote system or server
 # Where remotes
 
+if ! has_command __cd_after_hook ; then
+function __cd_after_hook()
+{
+    return 0
+}
+fi
+
+# cd, __cd_after_hook can be called and you hook at local_env.bash
+function cd()
+{
+    local cd_parameters=$DEFAULT_CD_PARAMETERS
+    local target_dir
+    while [ $# -gt 0 ] ; do
+        case $1 in
+            -*)
+                cd_parameters="$cd_parameters $1"
+                shift
+            ;;
+            --help)
+                cd --help
+                return 0
+                shift
+            ;;
+            *)
+                if [[ -n "$target_dir" ]] ; then
+                    echo "Too much parameters"
+                    return 1
+                fi
+                target_dir=$1
+                shift
+            ;;
+        esac
+    done
+
+    if [ -n "$target_dir" -a -f "$target_dir" -a "$(file -b $target_dir 2>/dev/null)" != "directory" ] ; then
+        target_dir=$(dirname $target_dir 2>/dev/null)
+    fi
+
+    if command cd $cd_parameters $target_dir ; then
+        __cd_after_hook $PWD 2>/dev/null
+        return 0
+    else
+        return 1
+    fi
+}
+
 # back directories
 function bd()
 {
