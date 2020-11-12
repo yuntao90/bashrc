@@ -284,21 +284,34 @@ function cd()
                     echo "Too much parameters"
                     return 1
                 fi
-                target_dir=$1
+                target_dir="$1"
                 shift
             ;;
         esac
     done
 
-    if [ -n "$target_dir" -a -f "$target_dir" -a "$(file -b $target_dir 2>/dev/null)" != "directory" ] ; then
+    if [ -n "$target_dir"  -a  -f "$target_dir"  -a   "$(file -b $target_dir 2>/dev/null)" != "directory" ] ; then
         target_dir=$(dirname $target_dir 2>/dev/null)
     fi
 
-    if command cd $cd_parameters $target_dir ; then
-        __cd_after_hook $PWD 2>/dev/null
-        return 0
+    # DEBUG
+    # echo "cd_parameters: ($cd_parameters) , target_dir: ($target_dir)"
+
+    # Workaround, for cd with no parameters
+    if [[ -n "$target_dir" ]] ; then
+        if command cd $cd_parameters "$target_dir" ; then
+            __cd_after_hook "$PWD" 2>/dev/null
+            return 0
+        else
+            return 1
+        fi
     else
-        return 1
+        if command cd $cd_parameters ; then
+            __cd_after_hook "$PWD" 2>/dev/null
+            return 0
+        else
+            return 1
+        fi
     fi
 }
 
