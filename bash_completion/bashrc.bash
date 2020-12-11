@@ -81,6 +81,7 @@ _bd()
                 return
                 ;;
             "2")
+                echo
                 ;;
         esac
     fi
@@ -90,6 +91,7 @@ _bd()
     local nextIndex=${j}
 
     local targetPath="$PWD"
+    local targetPathWithColor="$targetPath"
 
     if [ "$complete_solution" = "2" ] ; then
         if [ $(expr ${nextIndex} '>' ${limitCount} ) = 1 ] ; then
@@ -109,6 +111,13 @@ _bd()
 
         # Make /a/b/c -> /a/b
         targetPath="${targetPath%/*}"
+        local parent="${targetPath%/*}"
+        local current="${targetPath##*/}"
+        if [ "$BASHRC_SUPPORTS_COLOR" = yes ] ; then
+            targetPathWithColor="\033[01;34m$parent/\033[01;32m$current\033[00m"
+        else
+            targetPathWithColor=$targetPath
+        fi
 
         # j--
         j=$(expr ${j} - 1)
@@ -130,9 +139,11 @@ _bd()
         "2")
             # Solution 2. Show prompt with echo
             COMPREPLY=( "$nextIndex" )
-            echo -e "\n\t$nextIndex\t$targetPath"
+            echo -n -e "\033[K\r\t\t$targetPathWithColor <<<\r \t>>>\r"
+            # echo -n -e "\n\r\t\t$targetPathWithColor <<<\r \t>>>\r"
             if [ $(expr ${nextIndex} '>' ${limitCount} ) = 1 ] ; then
-                echo -e "\n\tReached the limit ($limit), please press ENTER or shrink the number"
+                echo -n -e "\n\tReached the limit ($limit), please press ENTER or shrink the number\r"
+                COMPREPLY=( "9" )
             fi
             ;;
         *)
