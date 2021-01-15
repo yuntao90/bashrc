@@ -1,0 +1,12 @@
+[Unit]
+Description=speedup-fan
+After=multi-user.target
+
+[Service]
+User=root
+Restart=always
+Type=simple
+ExecStart=/usr/local/bin/self-speedup-fan.sh
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Improve CPU min TDP to speedup cpu cpufreq when loading is full
+After=multi-user.target
+
+[Service]
+User=root
+Restart=always
+Type=simple
+ExecStart=/usr/local/bin/self-speedup-cpu.sh
+
+[Install]
+WantedBy=multi-user.target
