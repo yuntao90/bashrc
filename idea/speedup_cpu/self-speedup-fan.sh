@@ -13,6 +13,12 @@ SUDO=""
 fi
 
 $SUDO mkdir -p /var/run/self-speedup-fan
+if [[ -z "$(modprobe -c | grep 'options thinkpad_acpi fan_control=1')" ]] ; then
+    echo 'options thinkpad_acpi fan_control=1' | $SUDO tee -a /etc/modprobe.d/thinkpad_acpi.conf
+    $SUDO rmmod thinkpad_acpi
+    $SUDO modprobe thinkpad_acpi
+fi
+
 
 while [ true ] ; do
     if [[ -e $POLICY_FILE ]] ; then

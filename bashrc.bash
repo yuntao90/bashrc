@@ -333,14 +333,14 @@ function cd()
     # Workaround, for cd with no parameters
     if [[ -n "$target_dir" ]] ; then
         if command cd $cd_parameters "$target_dir" ; then
-            __cd_after_hook "$PWD" 2>/dev/null
+            __cd_after_hook "$PWD"
             return 0
         else
             return 1
         fi
     else
         if command cd $cd_parameters ; then
-            __cd_after_hook "$PWD" 2>/dev/null
+            __cd_after_hook "$PWD"
             return 0
         else
             return 1
