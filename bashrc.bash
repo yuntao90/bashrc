@@ -538,7 +538,7 @@ function getip()
     if [ -n "$1" ] ; then
         device="$1"
     fi
-    inet_line="$(ifconfig "$device" | grep "inet ")"
+    inet_line="$(LC_ALL=C ifconfig "$device" | grep "inet ")"
     if [ -n "$(echo $inet_line | grep -o ":")" ] ; then
         splitter=":"
     else
@@ -603,7 +603,7 @@ function parse_path_and_line()
 
 function calculate_total_mem()
 {
-    free -m | grep Mem: | xargs -n 2 | grep Mem: | cut -f 2 -d " "
+    LC_ALL=C free -m | grep Mem: | xargs -n 2 | grep Mem: | cut -f 2 -d " "
 }
 
 function filter_numbers()
