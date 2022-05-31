@@ -23,6 +23,10 @@ else
     echo -e "\n\033[34mNotice: \033[32mCan not found ANDROID_SDK, you can set it into \033[33m$LOCAL_ENV_BASHRC\033[0m"
 fi
 
+if [ -n "$ANDROID_NDK" ] ; then
+    export PATH="$ANDROID_NDK":$PATH
+fi
+
 ADB_BASHRC=$(dirname $MY_BASHRC_PLUS)/adb.bash
 DEFAULT_JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation"
 
