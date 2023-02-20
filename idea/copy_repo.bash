@@ -1,3 +1,4 @@
+#!/bin/bash
 
 function copy_new_repo()
 {
