@@ -638,13 +638,13 @@ function cgitdir()
     while [ "$PWD" != "/" ] ; do
         T=$PWD
         if [ -d "$T/.git" ] ; then
-            cd $T
+            command cd $T
             return
         fi
-        cd ..
+        command cd ..
     done
     echo "Failed to find .git"
-    cd $HERE
+    command cd $HERE
 }
 
 if [ -d "$HOME/tools/bin" ] ; then
